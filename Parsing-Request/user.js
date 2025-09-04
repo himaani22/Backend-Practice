@@ -1,8 +1,8 @@
 //Simple Nodde.js server
-const http = require('http')
+
 const fs = require('fs')
 
-const server =  http.createServer((req , res) => {
+const userRequestHandler =  (req , res) => {
     console.log(req.url , req.method );
    // process.exit();    // Stops event loop
     
@@ -38,23 +38,23 @@ const server =  http.createServer((req , res) => {
     const bodyObject = Object.fromEntries(params)
     console.log(params);
 
-    fs.writeFileSync('user.txt' , JSON.stringify(bodyObject))
+    fs.writeFile('user.txt' , JSON.stringify(bodyObject) , error => {  // using async 
+console.log('Data written Successfully');
+ res.statusCode = 302;
+    res.setHeader('Location' , '/')
+    res.end();
+    })
+   
     })
     
-    
-    res.statusCode = 302;
-    res.setHeader('Location' , '/')
    }
-
+else {
    res.setHeader('Content-type' , 'text/html')         //Sending Response
    res.write('<html>');
    res.write('<html><title>Holaa</title></html>')
    res.write('<body><h1>Holaaaaa amigos</h1></body>')
    res.write('</html>');
    return res.end();
- })
+ } };
+ module.exports = userRequestHandler;
 
-const PORT = 3001;
-server.listen(PORT , () =>{
-    console.log(`Server running on port ${PORT}`);
-});
